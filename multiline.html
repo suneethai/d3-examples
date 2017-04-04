@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<script src="http://d3js.org/d3.v4.min.js"></script>
+	<style>
+		.metric-data{
+			width: 450px;	
+			padding: 10px 0px 40px 20px;	
+		}
+		div.card{
+              width:99%; 
+              height:auto;
+              background-color: #fff; 
+              padding:15px 5px 15px 5px;
+              box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+          }
+
+		.card-header{
+			font-family: Arial;
+			font-size: 16px;
+			margin:20px 0px 0px 20px;
+			display: flex;
+			font-weight: bold;
+		}
+		.card-header div:first-child{
+			color:#000;
+		}
+		.card-header div:last-child{
+			color:#ccc;
+			margin-left: 10px;
+		}
+		.card-label{
+			font-family: Arial;
+			display:flex;
+			font-size: 22px;
+			color: #000;
+		}
+		.card-value{
+		    margin-top:10px;
+			display:flex;
+			font-family: Arial;
+		}
+		.card-value div#num{
+			font-size: 65px;
+			color: #4284F7;	
+			padding-right:30px;	
+		}
+		.card-value div#percentage{
+			font-size: 45px;
+			color: #009E00;
+			text-align: center;				
+			margin-top: 20px;
+		}
+		.card-metrics{
+		    margin-top:10px;
+			font-family: Arial;
+			display:flex;
+		}
+		.card-metrics div.platform{
+			font-size: 22px;
+			color: #6F6F6F;	
+			padding-right: 10px;		
+		}
+		.card-metrics div.platform-per{
+			font-size: 22px;
+			color: #000;	
+			margin-right: 10px;		
+		}
+      	.card-metrics div.platform-per_last{
+            padding-left: 15px;
+            font-size: 22px;
+			color: #000;	
+			margin-right: 10px;		
+		}
+        .svg-div{
+			border-top:2px solid #ddd;
+		}
+		body { font: 12px Arial;}
+
+		path { 
+		    stroke: steelblue;
+		    stroke-width: 2;
+		    fill: none;
+		}
+		.axis path,
+		.axis line {
+		    fill: none;
+		    stroke: grey;
+		    stroke-width: 1;
+		    shape-rendering: crispEdges;
+		}
+        .arrow_icon{
+          margin-top:40px;
+          width:22px;
+          height:22px;
+        }
+	</style>
+</head>
+<body>
+	<div class="card">
+		<div class="metric-data">
+			<div class="card-label">Smartphones</div>
+            <div class="card-value">
+              <div id="num">289M</div>
+              <div>
+                <img src="http://www.free-icons-download.net/images/crystal-green-up-arrow-icon-36492.png" class="arrow_icon" />
+        	  </div>
+              <div id="percentage">1%</div>
+            </div>
+			<div class="card-metrics">
+                <div class="platform-per">53%</div><div class="platform">Android</div>
+                <div class="platform-per_last">45%</div><div class="platform">iOS</div>
+			</div>				
+		</div>
+		<div class="svg-div">
+			<div class="card-header">
+				<div>Trend</div><div>vs featurephones</div></div>
+			<svg></svg>
+		</div>
+	</div>
+	<script type="text/javascript">
+    
+      var data = {"card-value":"289M", 
+                  "card-percentage":"1%",
+                  "card-metrics":[
+                    {"os":"Android","value":"53%"},
+                    {"os":"IOS","value":"45%"}],
+                  "trendsData":[
+                    {"year":"2010","trend":"35"},
+                    {"year":"2012","trend":"50"},
+                    {"year":"2014","trend":"60"},
+                    {"year":"2016","trend":"70"},
+                    {"year":"2018","trend":"75"},
+                    {"year":"2020","trend":"78"}],
+                  "featuresData":[
+                    {"year":"2010", "feature":"50"},
+                    {"year":"2012", "feature":"36"},
+                    {"year":"2014", "feature":"20"},
+                    {"year":"2016", "feature":"10"},
+                    {"year":"2018", "feature":"3"},
+                    {"year":"2020", "feature":"1"}],
+                  "breakpoint_year":"2016"
+              };
+
+    var margin = {top:20,right:20,bottom:30,left:40},
+	width = 560 - margin.left - margin.right,
+	height = 300 - margin.top - margin.bottom;
+
+    var x = d3.scaleBand().domain(data.trendsData.map(function(d) { return d.year; })).rangeRound([0,width]),
+        y = d3.scaleLinear().domain([0, 100]).range([height,0]);
+
+    var xaxis = d3.axisBottom(x).tickSizeOuter([0]);
+    var yaxis = d3.axisLeft(y);
+
+    var svg = d3.select('svg')
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform","translate(20,0)");
+
+    svg.append("g")
+      .attr("class", "axis axis--x")
+      .attr("transform", "translate(0,"+height+")")
+      .call(customXaxis);
+
+    svg.append("g")
+      .attr("class", "axis axis--y")
+      .call(customYaxis);
+
+	var l4 = 1, strokeWidth = 3;
+	for(var l3=0; l3 < data.featuresData.length; l3++)
+	{
+		if(!data.featuresData[l3+1]) l4 = l3;
+		else l4 = l3+1
+
+		if( data.breakpoint_year <= data.featuresData[l3].year)
+		{
+			svg.append("line")
+				.attr("x1",x(data.featuresData[l3].year))
+				.attr("y1",y(data.featuresData[l3].feature))
+				.attr("x2",x(data.featuresData[l4].year))
+				.attr("y2",y(data.featuresData[l4].feature))
+				.attr("stroke","#ccc")
+				.attr("stroke-dasharray","5,5")
+	  			.attr("stroke-width",strokeWidth);
+
+
+			if(data.featuresData[l3].year == data.breakpoint_year)
+			{
+				svg.append("circle")
+					.attr("r",7)
+					.attr("cx",x(data.featuresData[l3].year))		
+					.attr("cy",y(data.featuresData[l3].feature))
+					.attr("fill","#ccc");
+			}
+		}
+		else
+		{
+			svg.append("line")
+				.attr("x1",x(data.featuresData[l3].year))
+				.attr("y1",y(data.featuresData[l3].feature))
+				.attr("x2",x(data.featuresData[l4].year))
+				.attr("y2",y(data.featuresData[l4].feature))
+				.attr("stroke","#ccc")
+				.attr("stroke-width",strokeWidth);
+
+		}
+	}
+      
+    var l2 = 1;
+	for(var l=0; l < data.trendsData.length; l++)
+	{
+		if(!data.trendsData[l+1]) l2 = l;
+		else l2 = l+1
+
+		if( data.breakpoint_year <= data.trendsData[l].year)
+		{
+			svg.append("line")
+				.attr("x1",x(data.trendsData[l].year))
+				.attr("y1",y(data.trendsData[l].trend))
+				.attr("x2",x(data.trendsData[l2].year))
+				.attr("y2",y(data.trendsData[l2].trend))
+				.attr("stroke","#4284f7")
+				.attr("stroke-dasharray","5,5")
+	  			.attr("stroke-width",strokeWidth);
+
+			if(data.trendsData[l].year == data.breakpoint_year)
+			{
+				svg.append("circle")
+					.attr("r",7)
+					.attr("cx",x(data.trendsData[l].year))		
+					.attr("cy",y(data.trendsData[l].trend))
+					.attr("fill","#4284f7");
+			}
+		}
+		else
+		{
+			svg.append("line")
+				.attr("x1",x(data.trendsData[l].year))
+				.attr("y1",y(data.trendsData[l].trend))
+				.attr("x2",x(data.trendsData[l2].year))
+				.attr("y2",y(data.trendsData[l2].trend))
+				.attr("stroke","#4284f7")
+				.attr("stroke-width",strokeWidth);
+		}
+		
+	}
+
+    /** to append custom css to X axis **/
+    function customXaxis(g){
+      g.call(xaxis).selectAll('line').remove();
+      g.select(".domain").style("stroke","#E0E0E0").style("stroke-width","2px");
+      g.selectAll('text')
+          .style("font-size","20px")
+          .style("font-family","Arial")
+          .style("fill","#666666")
+          .style("text-anchor","end");
+    }
+
+    /** to append custom css to Y axis **/
+    function customYaxis(g)
+    {
+      g.call(yaxis)  
+       .selectAll('text')
+          .style("font-size","14px")
+          .style("font-family","Arial")
+          .style("fill","#666666");
+       g.select(".domain").remove();
+       g.selectAll(".tick").remove();
+    }
+    </script>
+</body>
+</html>

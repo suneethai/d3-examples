@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="http://d3js.org/d3.v4.min.js"></script>
+
+		<style>
+	        .card-header{
+	          font-family:Arial;
+	          font-size:14px;
+	          padding: 0 0 20px 10px;
+	          font-weight: bold;
+	        }
+	        div.card{
+	            width:99%; 
+	            height:auto;
+	            background-color: #fff; 
+	            padding:15px 5px 15px 5px;
+	            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	        }
+	        .internet_users{
+	        	display:flex;
+	        }
+	        #internet_users_num{
+	        	color:#0068D9;
+	        	font-family: Arial;
+	        	font-size: 14px;
+	        	padding : 5px 0 0 1px;
+	        }
+	        #internet_users_txt{
+	        	color:#666;
+	        	font-family: Arial;
+	        	font-size: 14px;
+	        	padding: 6px 0 0 4px;
+	        }
+	        #up_by{
+	        	color:#028c02;
+	        	font-family: Arial;
+	        	font-size: 14px;
+	        	padding : 6px 0 0 1px;
+	        }
+
+	        .flower_icon{
+	        	margin-left:9px; 
+	        	margin-bottom: 1px;
+	        	width:25px;
+                height:25px;
+	        }
+
+	        .lines{
+	        	display: flex;
+	        }
+
+	        .line1{
+	        	margin-left:21px;
+	        	height:60px; 
+	        	width:100px; 
+	        	border-left:1px solid #ccc;
+	        }
+	        .arrow_icon{
+	        	margin-left:8px;
+	        	margin-top: 8px;
+	        	width:12px;
+                height:12px;
+	        }
+	        #line2{
+	        	height:20px; 
+	        	width:20px; 
+	        	border-left: 1px solid #ccc;
+	        }
+	        #new_users_txt{
+	        	display: flex;
+	        }
+	        .minimal_txt{
+              margin-top: 25px;
+            }	        
+	        .blue_txt{
+	        	color:#0068D9;
+	        	font-family: Arial;
+	        	font-size:13px;
+	        }
+	        .grey_txt{
+	        	color:#666;
+	        	font-family: Arial;
+	        	font-size:13px;
+	        	margin-left: 5px;
+	        }
+	        .bottom_txt{
+	        	display: flex;
+	        }
+	      </style>
+	</head>
+	<body>
+      	<div class="card">
+        	<div class="card-header">Internet Penetration</div>
+        	<div class="internet_users">
+        		<img src="https://lh3.googleusercontent.com/Bslk1vhWjjKUz7JE6TweWo24X7gHAgFHNJjM2CN1YAu0j2eyM_Pk_r2GFpQaI0Pm4YSa=w300" class="flower_icon" />
+        		<div id="internet_users_num"></div>
+        		<div id="internet_users_txt">Internet users</div>
+        		<div>
+        			<img src="http://www.free-icons-download.net/images/crystal-green-up-arrow-icon-36492.png" class="arrow_icon" />
+        		</div>
+        		<div id="up_by"></div>
+        	</div>
+        	<div class="lines">
+	        	<div class="line1"></div> 
+	        	<div class="minimal_txt">
+	        		<div id="new_users_txt">
+	        			<div class="blue_txt">minimal</div>
+	        			<div class="grey_txt">potential new users</div>
+	        		</div>
+	        		<div id="line2"></div>	        		
+	        	</div>
+        	</div>
+        	<svg></svg>
+      	</div>
+		<script type="text/javascript">
+
+		var width = 1000, height = 70;
+		var bar_height = "20px";
+
+		var data = {"total_population":"321.4","internet_users":"292.1","itu_estimate":"282.2","up_by":"1%","new_internet_users":"29.3","measuring_unit":"M"};
+
+		document.getElementById("internet_users_num").innerHTML = data.internet_users+data.measuring_unit;
+
+		document.getElementById('up_by').innerHTML = data.up_by;
+		document.getElementById("line2").style.marginLeft = (data.internet_users - 98)+"px";
+		document.getElementById("new_users_txt").style.marginLeft = (data.internet_users - 200)+"px";
+
+		var svg = d3.select("svg")
+					.attr("width",width)
+					.attr("height",height)
+					.attr("transform","translate(20,2)");
+
+		svg.append("rect")
+			.attr("height",bar_height)
+			.attr("width", data.internet_users+"px")
+			.attr("fill","#0068D9");
+
+		svg.append("rect")
+			.attr("x",parseInt(data.internet_users)+ 4)
+			.attr("y",0)
+			.attr("height",bar_height)
+			.attr("width","3px")
+			.attr("fill","#0068D9")
+			.attr("stroke","#0068D9")
+			.attr("stroke-width",1);
+
+		svg.append("rect")
+			.attr("x",parseInt(data.internet_users)+ 7)
+			.attr("y",0)
+			.attr("height",bar_height)
+			.attr("width",data.new_internet_users+"px")
+			.attr("fill","#fff")
+			.attr("stroke","#666")
+			.attr("stroke-width",0.5);
+
+		svg.append("text")
+			.text(data.total_population+data.measuring_unit)
+			.attr("x",data.total_population - 78)
+			.attr("y",40)
+			.attr("font-family", "Arial")
+			.attr("font-size","14px")
+			.attr("fill","#000");
+
+		svg.append("text")
+			.text("population")
+			.attr("x",data.total_population - 27)
+			.attr("y",40)
+			.attr("font-family", "Arial")
+			.attr("font-size","14px")
+			.attr("fill","#000");
+		
+		svg.append("image")
+			.attr("xlink:href", "http://www.otel.com.np/assets/images/associate1.png")
+			.attr("x", 0)
+			.attr("y", 45)
+			.attr("width", 24)
+			.attr("height", 24);
+
+		svg.append("text")
+			.text("ITU estimate: "+data.itu_estimate+data.measuring_unit+" Internet users")
+			.attr("x", 30)
+			.attr("y", 60)
+			.attr("font-family", "Arial")
+			.attr("font-size","12px")
+			.attr("font-style","italic")
+			.attr("fill","#666");
+		
+		</script>
+	</body>
+</html>

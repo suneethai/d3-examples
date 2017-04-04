@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="http://d3js.org/d3.v4.min.js"></script>
+
+		<style>
+	        .card-header{
+	          font-family:Arial;
+	          font-size:14px;
+	          padding-bottom:20px;
+	        }
+	        div.card{
+	            width:99%; 
+	            height:auto;
+	            background-color: #fff; 
+	            padding:15px 5px 15px 5px;
+	            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	        }
+
+	      </style>
+	</head>
+	<body>
+      <div class="card">
+        <div class="card-header">Brand Perception</div>
+        <svg></svg>
+      </div>
+	<script type="text/javascript">
+		
+		var data = [			{"parameter":"Usefulness","records":[
+				{"name" : "bing", "value":"39","icon":"http://www.iconninja.com/files/182/74/337/bing-icon.png"},
+				{"name" : "facebook", "value":"53","icon":"http://penang.hardrockhotels.net/wp-content/themes/hardrockhotels/img/icon-facebook.png"},
+				{"name" : "apple", "value":"57","icon":"http://cdn4.iconfinder.com/data/icons/iconsimple-logotypes/512/apple-128.png"},
+				{"name" : "youtube", "value":"65","icon":"https://www.youtube.com/yts/img/favicon_96-vfldSA3ca.png"},
+				{"name" : "windows", "value":"67","icon":"https://www.shareicon.net/data/128x128/2016/07/09/118252_windows_512x512.png"},
+				{"name" : "amazon", "value":"80","icon":"http://wp-de.torstengoods.de/wp-content/uploads/manual/images/cb_amazon-gross.png"},
+				{"name" : "google", "value":"78","icon":"https://www.booking-co.com/assets/images/google.png"}
+				]
+			},			
+			{"parameter":"Trust","records":[
+				{"name" : "bing", "value":"31","icon":"http://www.iconninja.com/files/182/74/337/bing-icon.png"},
+				{"name" : "facebook", "value":"26","icon":"http://penang.hardrockhotels.net/wp-content/themes/hardrockhotels/img/icon-facebook.png"},
+				{"name" : "apple", "value":"45","icon":"http://cdn4.iconfinder.com/data/icons/iconsimple-logotypes/512/apple-128.png"},
+				{"name" : "youtube", "value":"37","icon":"https://www.youtube.com/yts/img/favicon_96-vfldSA3ca.png"},
+				{"name" : "windows", "value":"52","icon":"https://www.shareicon.net/data/128x128/2016/07/09/118252_windows_512x512.png"},
+				{"name" : "amazon", "value":"62","icon":"http://wp-de.torstengoods.de/wp-content/uploads/manual/images/cb_amazon-gross.png"},
+				{"name" : "google", "value":"55","icon":"https://www.booking-co.com/assets/images/google.png"}
+				]
+			},{"parameter":"Favorability","records":[
+				{"name" : "bing", "value":"34","icon":"http://www.iconninja.com/files/182/74/337/bing-icon.png"},
+				{"name" : "facebook", "value":"38","icon":"http://penang.hardrockhotels.net/wp-content/themes/hardrockhotels/img/icon-facebook.png"},
+				{"name" : "apple", "value":"50","icon":"http://cdn4.iconfinder.com/data/icons/iconsimple-logotypes/512/apple-128.png"},
+				{"name" : "youtube", "value":"44","icon":"https://www.youtube.com/yts/img/favicon_96-vfldSA3ca.png"},
+				{"name" : "windows", "value":"64","icon":"https://www.shareicon.net/data/128x128/2016/07/09/118252_windows_512x512.png"},
+				{"name" : "amazon", "value":"61","icon":"http://wp-de.torstengoods.de/wp-content/uploads/manual/images/cb_amazon-gross.png"},
+				{"name" : "google", "value":"72","icon":"https://www.booking-co.com/assets/images/google.png"}
+				]
+			}
+			
+		];
+		
+		var margin = {top: 60, right: 20, bottom: 30, left: 130},
+    	width = 960 - margin.left - margin.right,
+    	height = 260 - margin.top - margin.bottom;
+
+		// set the ranges
+		var x = d3.scaleLinear().domain([20,100]).range([0,960]);
+		var y = d3.scaleLinear().domain([100,0]).range([height,0]);
+		
+		var xaxis = d3.axisBottom(x).tickSizeOuter([0]);
+		var yaxis = d3.axisLeft(y).tickSize(-width).tickFormat("").tickPadding(40).ticks([3]);
+
+		var svg = d3.select("svg")
+					.attr("width", width + margin.left + margin.right)
+    				.attr("height", height + margin.top + margin.bottom)
+  					.append("g")
+    				.attr("transform","translate(" + margin.left + "," + margin.top + ")");
+
+		svg.append('g')
+		   .attr("class","axis axis--x")
+		   .attr("transform", "translate(0,"+ (height)+")")
+		   .call(customXaxis);
+
+
+		svg.append('g')
+			.attr("class","axis axis--y")
+			.call(customYaxis);
+
+		for(var j = 0; j < data[0].records.length; j++)
+		{
+			var node = svg.selectAll(".node"+j)
+					.data(data)
+					.enter().append("g")
+					.attr("class","node"+j)
+					.attr("transform",function(d,i){
+						var x_cod = x(d.records[j].value);
+						if(i == 0)
+							return "translate("+x_cod+", -25)";
+						else if(i == 1)
+							return "translate("+x_cod+", 60)";
+						else if(i == 2)
+							return "translate("+x_cod+", 145)";
+					});
+
+			node.append("image")
+				.attr("xlink:href", function(d,i){
+					return d.records[j].icon;
+				})
+				.attr("x", -9)
+				.attr("y", -9)
+				.attr("width", 18)
+				.attr("height", 18);
+			
+			node.append("circle")
+				.attr("r", 15)
+				.attr("stroke", "#ccc")
+				.attr("stroke-width","1.5px")
+				.attr("fill","transparent");
+          
+            node.append("circle")
+				.attr("r", 1)
+                .attr("cx",0)
+                .attr("cy",25)
+				.attr("stroke", function(d,i){
+                    if(d.records[j].name == "youtube")
+                      return "red";
+                    else
+                      return "#ccc";
+                })
+                .attr("stroke-width","1.5px");
+
+			node.append("text")
+	   			.text(function(d){ return d.records[j].value+"%"; })
+	   			.attr("font-size","12px")
+	   			.attr("fill","#666666")
+	   			.attr("font-family","Arial")
+	   			.attr("x",-9)
+	   			.attr("y",-22);
+			
+			
+		}
+
+		function customXaxis(g){
+			g.call(xaxis).selectAll("line").remove();
+            g.select(".domain").remove();
+			g.selectAll(".tick").remove();
+		}
+
+		function customYaxis(g){
+			g.call(yaxis)
+				.select(".domain").remove();
+		
+            g.selectAll("line")
+              .attr("stroke","#ccc");
+          
+			g.selectAll("text")
+				.data(data)
+				.text(function(d,i){ return d.parameter;})
+				.style("font-size","14px")
+				.style("font-family","Arial")
+				.style("fill","#666666");				
+		}
+
+
+	</script>
+	</body>
+</html>

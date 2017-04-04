@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="http://d3js.org/d3.v4.js"></script>
+	</head>
+	<body>
+		<svg width="1000" height="500"></svg>
+		<script type="text/javascript">
+		var jsonRectangles = [
+        		{"Country":"US","Date":"2017-03-23","Open":"22","High":"102","Low":"20","Close":"99","Volume":"1945700","Adj_Close":"98"},
+        		{"Country":"GB","Date":"2017-03-22","Open":"16","High":"30","Low":"14","Close":"27","Volume":"2636200","Adj_Close":"28"},
+        		{"Country":"CA","Date":"2017-03-21","Open":"25","High":"99","Low":"23","Close":"96","Volume":"4349100","Adj_Close":"96"},
+        		{"Country":"SE","Date":"2017-03-20","Open":"12","High":"45","Low":"10","Close":"42","Volume":"2223300","Adj_Close":"42"},
+        		{"Country":"FL","Date":"2017-03-17","Open":"10","High":"22","Low":"8","Close":"19","Volume":"3380700","Adj_Close":"20"},
+        		{"Country":"NO","Date":"2017-03-16","Open":"35","High":"50","Low":"33","Close":"47","Volume":"1832600","Adj_Close":"48"}
+        ];
+
+        function min(a, b){ return a < b ? a : b ; }
+      		 		     
+      	function max(a, b){ return a > b ? a : b; }    
+
+		/** instantiating svg object **/
+		var svgContainer = d3.select("svg"),
+		    margin = {top: 20, right: 20, bottom: 30, left: 80},
+		    width = +svgContainer.attr("width") - margin.left - margin.right,
+		    height = +svgContainer.attr("height") - margin.top - margin.bottom;
+
+
+
+		/** constructing bar graph with custom css **/
+		var x = d3.scaleBand().rangeRound([0, 800]).padding(0.3),
+		    y = d3.scaleLinear().rangeRound([height, 0]);
+
+		var g = svgContainer.append("g")
+		    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+		x.domain(jsonRectangles.map(function(d) { return d.Country; }));
+		y.domain([0, d3.max(jsonRectangles.map(function(d){return d.High;}))]);
+
+		var xaxis = d3.axisBottom(x).tickSizeOuter([0]);
+		var yaxis = d3.axisLeft(y);
+
+		g.append("g")
+		  .attr("class", "axis axis--x")
+		  .attr("transform", "translate(0," + height + ")")
+		  .call(customXaxis);
+
+		g.append("g")
+		  .attr("class", "axis axis--y")
+		  .call(customYaxis)
+		  .append("text")
+		  .attr("y", 6)
+		  .attr("dy", "0.71em")
+		  .attr("text-anchor", "end")
+		  .text("")
+		  .attr("font-size","13px");
+
+
+		var rectangles = svgContainer.selectAll("rect")
+						             .data(jsonRectangles)
+						             .enter()
+						             .append("rect");
+
+		var rectangleAttributes = rectangles
+									.attr("class","candle")
+									.attr("transform","translate(120,20)")
+									.attr("x", function (d) { return x(d.Country); })
+									.attr("y", function(d) {return y(d.Close);})		  
+									.attr("height", function(d) { return y(min(d.Open, d.Close))-y(max(d.Open, d.Close)) ;})
+									.attr("width", function (d) { return 16; })
+									.attr("fill", "#0068D9");
+
+		svgContainer.selectAll("candle")
+					.data(jsonRectangles)
+					.enter()
+					.append("rect")
+					.attr("class","stand")					
+					.attr("transform","translate(120,20)")
+					.attr("height",12)
+					.attr("width",35)
+					.attr("x",function(d){ return x(d.Country) - 10; })
+					.attr("y",function(d){ return y(d.High); })
+					.attr("fill","#0068D9");
+
+		svgContainer.selectAll("candle")
+					.data(jsonRectangles)
+					.enter()
+					.append("rect")
+					.attr("class","stand")					
+					.attr("transform","translate(120,20)")
+					.attr("height",12)
+					.attr("width",35)
+					.attr("x",function(d){ return x(d.Country) - 10; })
+					.attr("y",function(d){ return y(d.Low) - 6; })
+					.attr("fill","#0068D9");
+
+		/** to append custom css to X axis **/
+		function customXaxis(g){
+		  g.call(xaxis);
+		  g.select('.domain').remove();
+		  g.selectAll('line').remove();
+		  g.selectAll('text')
+			  .style("font-size","20px")
+		      .style("font-family","Arial")
+		      .style("fill","#666666");
+		}
+		/** to append custom css to Y axis **/
+		function customYaxis(g)
+		{
+		  g.call(yaxis).selectAll('line').remove();
+		   g.selectAll('text')
+		      .style("font-size","14px")
+		      .style("font-family","Arial")
+		      .style("fill","#666666");
+		   g.select(".domain").style("stroke","#939292");
+		   g.selectAll("line").style("stroke","#939292");
+		}
+		</script>
+	</body>
+</html>	
