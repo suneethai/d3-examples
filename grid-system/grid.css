@@ -1,0 +1,41 @@
+* {
+    box-sizing: border-box;
+}
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+.grid {
+    max-width: 2000px;
+    width: 100%;
+    overflow: hidden;
+    margin: 0 auto;
+}
+.grid {
+    width: 100%;
+}
+
+.half {
+    float: left;
+    width: 50%;
+    max-width: 1000px; /*with a max width applied to the grid you don't need these lines*/
+    border: 1px solid #000000;
+}
+
+.forth {
+    float: left;
+    width: 25%;
+    max-width: 500px; /*with a max width applied to the grid you don't need these lines*/
+    border: 1px solid #000000;
+}
+
+.right {
+    float: right;
+}
+.right {
+    background-color: #3cf;
+}
+.right img {
+    opacity: 0.8;
+}

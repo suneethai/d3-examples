@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+   <head>
+    <script type="text/javascript" src="http://d3js.org/d3.v4.min.js"></script>
+    <script src="sankey.js" type="text/javascript" ></script>
+    <style>
+                    
+          .node rect {
+            cursor: move;
+            shape-rendering: crispEdges;
+          }
+
+          .node text {
+            pointer-events: none;
+            text-shadow: 0 1px 0 #E0F6A4;
+          }
+
+          #path_2 {
+            fill:none;
+            stroke: url(#mainGradient1);
+          }
+
+          #path_0,#path_1{
+            fill:none;
+            stroke:url(#mainGradient2);
+          }
+
+          .card-header{
+            font-family:Arial;
+            font-size:14px;
+            padding-bottom:20px;
+          }
+          div.card{
+              width:99%; 
+              height:auto;
+              background-color: #fff; 
+              padding:15px 5px 15px 5px;
+              box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+          }
+           .stop-left1 {
+                stop-color: #92E75D;  /* Indigo */
+            }
+
+            .stop-right1 {
+                stop-color: #FFF;  /* Teal */
+            }
+
+           .stop-left2 {
+                stop-color: #C6F04D;  /* Indigo */
+            }
+
+            .stop-right2 {
+                stop-color: #FFF;  /* Teal */
+            }
+
+        </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="card-header">Google Traffic</div>
+      <svg>
+        <path d="M140,150 L160,190 175,190 175,110 160,110 140,150" style="stroke: #666; fill:#666;" />
+      </svg>
+    </div>
+  </body>
+</html>
