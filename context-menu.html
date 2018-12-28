@@ -1,0 +1,77 @@
+<!-- http://bl.ocks.org/jakosz/ce1e63d5149f64ac7ee9 -->
+<!-- http://bl.ocks.org/clemens-tolboom/7229863 -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Context Menu</title>
+    <style>
+      #main {
+        display: inline-block;
+        background-color: grey;
+        position: relative;
+      }
+      .menu {
+        border: 1px solid black;
+        background-color: grey;
+        display: none;
+        position: relative;
+      }
+      .menu,
+      .menu li {
+        padding: 0px;
+        margin: 0px;
+      }
+      .menu li {
+        color: white;
+      }
+      .menu > li:hover {
+        background-color: lightblue;
+        color: black;
+      }
+      .menu li {
+        display: none;
+      }
+
+      .menu.svg li.svg{
+        display: block;
+      }
+    </style>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script type="text/javascript">
+      window.onload = function() {
+        var context = null;
+        var svg = d3.select('#main')
+                .append('svg:svg')
+                .attr('width', 300)
+                .attr('height', 300)
+
+        var contextMenu = function(that) {
+          d3.event.preventDefault();
+          var position = d3.mouse(that);
+          d3.select('#context-menu')
+            .attr('class', 'menu svg')
+            .style('position', 'absolute')
+            .style('left', position[0] + "px")
+            .style('top', position[1] + "px")
+            .style('display', 'inline-block')
+            .on('mouseleave', function() {
+              d3.select('#context-menu').style('display', 'none');
+              context = null;
+            });
+        }
+
+        svg.on("contextmenu", function() {
+          contextMenu(this);
+        });
+
+      }
+    </script>
+  </head>
+  <body>
+    <div id="main"></div>
+    <ul id="context-menu" class="menu">
+      <li class="svg">option1</li>
+      <li class="svg">option2</li>
+    </ul>
+  </body>
+</html>
